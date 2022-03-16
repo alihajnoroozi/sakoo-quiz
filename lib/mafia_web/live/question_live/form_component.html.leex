@@ -1,0 +1,37 @@
+<div style="direction: rtl;">
+    <h2><%= @title %></h2>
+
+    <%= f = form_for @changeset, "#",
+  id: "question-form",
+  phx_target: @myself,
+  phx_change: "validate",
+  phx_submit: "save" %>
+
+
+    <%= #label f, :question %>
+    <label for="question_<%= :question %>">عنوان سوال</label>
+    <%= text_input f, :question %>
+    <%= error_tag f, :question %>
+
+    <label for="question_<%= :answer_time %>">زمان پاسخگویی به سوال ( بر حسب ثانیه )</label>
+    <%= #label f, :answer_time %>
+    <%= number_input f, :answer_time %>
+    <%= error_tag f, :answer_time %>
+
+    <label for="question_<%= :admin_description %>">توضیحات ادمین</label>
+    <%= text_input f, :admin_description %>
+    <%= error_tag f, :admin_description %>
+
+    <%= #label f, :order %>
+    <label for="question_<%= :order %>">تربیت نمایش سوال</label>
+    <%= number_input f, :order %>
+    <%= error_tag f, :order %>
+
+    <%= #label f, :point %>
+    <label for="question_<%= :point %>">امتیاز سوال</label>
+    <%= number_input f, :point %>
+    <%= error_tag f, :point %>
+
+    <%= submit "Save", phx_disable_with: "Saving..." %>
+    </form>
+</div>

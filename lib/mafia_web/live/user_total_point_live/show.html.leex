@@ -1,0 +1,27 @@
+<h1>Show User total point</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, MafiaWeb.UserTotalPointLive.FormComponent,
+    id: @user_total_point.id,
+    title: @page_title,
+    action: @live_action,
+    user_total_point: @user_total_point,
+    return_to: Routes.user_total_point_show_path(@socket, :show, @user_total_point) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>User:</strong>
+    <%= @user_total_point.user_id %>
+  </li>
+
+  <li>
+    <strong>Total point:</strong>
+    <%= @user_total_point.total_point %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.user_total_point_show_path(@socket, :edit, @user_total_point), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.user_total_point_index_path(@socket, :index) %></span>

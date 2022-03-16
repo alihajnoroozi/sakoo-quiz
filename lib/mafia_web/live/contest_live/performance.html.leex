@@ -1,0 +1,101 @@
+<div class="admin">
+	<%= if @status_message != '' and @status_message != nil do %>
+		<p class="message"><%= @status_message %></p>
+	<% end %>
+	<p class="green">تعداد کاربران در حال بازی: <br><%= @online_users %> نفر
+		<span class="material-icons">
+			sentiment_very_satisfied
+		</span>
+	</p>
+	<p>
+		<button class="red" phx-click="end_game"
+		        phx-value-sessionid=<%= @session_id %> <%= if @is_playing == false do %> disabled <% end %>>پایان مسابقه
+		</button>
+	</p>
+	<%= if @should_show_calculate_leaderboard_ranks do %>
+	<p>
+		<button <%= if (@should_show_calculate_leaderboard_ranks == true) and (@is_playing == true || @is_leaderboard_is_ready == true or @should_show_add_to_db_button == true) do %> disabled <% end %> phx-click="calculate_leaderboard" phx-value-sessionid="<%= @session_id %>">محاسبه لیدر بورد مسابقه</button>
+	</p>
+	<% end %>
+	<p>
+		<button <%= if  @should_show_add_to_db_button == true do %> disabled <% end %> phx-click="calculate_total_leaderboard_rank" phx-value-sessionid="<%= @session_id %>">به روز رسانی لیدر برد کلی</button>
+	</p>
+	<p>
+	<button  phx-click="refresh_game_page" >رفرش صفحه گیم</button>
+	</p>
+	<p>
+		<span id="time-left">
+			<%= if @current_question_id != nil and @countdown > 0 do %>
+				<%= if rem(@countdown,60 ) > 9 do %> <%= rem(@countdown,60 ) %> <% else %> 0<%= rem(@countdown,60 ) %> <% end %>:
+				<%= if trunc(@countdown/60) > 9 do %><%= trunc(@countdown/60) %><% else %>0<%= trunc(@countdown/60) %><% end %>
+				تا پایان مهلت پاسخ به سوال
+			<% else %>
+				<% if @current_question_id != nil do%>
+					پایان مهلت پاسخ به سوال
+				<% end %>
+			<% end %>
+			<span></span>
+		</span>
+	</p>
+	<%= if @is_playing == true do %>
+	<table style="direction: rtl;">
+		<thead>
+		<tr>
+			<th>ترتیب نمایش</th>
+			<th>سوال</th>
+			<th>توضیحات ادمین</th>
+			<th>مهلت پاسخ ( به ثانیه)</th>
+			<th>امتیاز سوال</th>
+
+			<th></th>
+		</tr>
+		</thead>
+		<tbody id="question">
+		<%= for question <- @questions do %>
+		<tr id="question-<%= question.id %>">
+			<td><%= question.order %></td>
+			<td><%= question.question %></td>
+			<td><%= question.admin_description %></td>
+			<td><%= question.answer_time %></td>
+			<td><%= question.point %></td>
+			<td>
+				<%= if @current_question_id != nil and @current_question_id == question.id do %>
+				<button class="red" phx-click="hide_question" phx-value-questionid=<%= question.id %>>عدم نمایش سوال</button>
+				<% else %>
+				<button phx-click="show_question" phx-value-questionid=<%= question.id %>>نمایش سوال</button>
+				<% end %>
+
+			</td>
+		</tr>
+		<% end %>
+		</tbody>
+	</table>
+	<% end %>
+
+	<%= if length(@leaderboard_data) > 0 do %>
+	<section id="board">
+		<div class="board-row">
+			<div class="right">
+				<div class="rank">رتبه</div>
+				<div class="mobile">شماره کاربر</div>
+			</div>
+			<div class="points">امتیاز</div>
+		</div>
+		<%= for item <- @leaderboard_data do %>
+			<div class="board-row" >
+				<div class="right">
+					<div class="rank"><%=item.rank%></div>
+					<div class="mobile"><%=item.user_mobile%></div>
+				</div>
+				<div class="points"><%=item.total_point%></div>
+			</div>
+		<% end %>
+	</section>
+	<% end %>
+	<%= live_patch to: Routes.session_index_path(@socket, :index) do%>
+		<div class="back">
+		<span class="material-icons">arrow_back</span>
+		بازگشت
+		</div>
+	<% end %>
+</div>

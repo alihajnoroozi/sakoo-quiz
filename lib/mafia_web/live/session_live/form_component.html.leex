@@ -1,0 +1,43 @@
+<div style="direction: rtl;">
+<h2><%= @title %></h2>
+
+<%= f = form_for @changeset, "#",
+  id: "session-form",
+  phx_target: @myself,
+  phx_change: "validate",
+  phx_submit: "save" %>
+
+  <%= #label f, :title %>
+<label for="session_<%= :title %>">عنوان مسابقه</label>
+  <%= text_input f, :title %>
+  <%= error_tag f, :title %>
+
+  <%= #label f, :description %>
+<label for="session_<%= :description %>">توضیحات مسابقه</label>
+  <%= text_input f, :description %>
+  <%= error_tag f, :description %>
+
+  <%= #label f, :image_path %>
+<label for="session_<%= :image_path %>">عکس</label>
+  <%= text_input f, :image_path %>
+  <%= error_tag f, :image_path %>
+
+  <%= #label f, :video_path %>
+<!-- <label for="answer_<%= :is_correct %>">گزینه صحیح</label> -->
+  <%= #text_input f, :video_path %>
+  <%= #error_tag f, :video_path %>
+
+  <%= #label f, :is_published %>
+<label for="session_<%= :is_published %>">انتشار یافته</label>
+  <%= checkbox f, :is_published %>
+  <%= error_tag f, :is_published %>
+
+  <%= #label f, :is_closed %>
+<label for="session_<%= :is_closed %>">بسته شده</label>
+  <%= checkbox f, :is_closed %>
+  <%= error_tag f, :is_closed %>
+
+
+  <%= submit "ذخیره", phx_disable_with: "در حال ذخیره سازی ..." %>
+</form>
+</div>

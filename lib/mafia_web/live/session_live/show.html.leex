@@ -1,0 +1,64 @@
+<div class="admin" id="show-session">
+  <h1>Show Session</h1>
+
+  <%= if @live_action in [:edit] do %>
+    <%= live_modal @socket, MafiaWeb.SessionLive.FormComponent,
+      id: @session.id,
+      title: @page_title,
+      action: @live_action,
+      session: @session,
+      return_to: Routes.session_show_path(@socket, :show, @session) %>
+  <% end %>
+
+  <ul>
+
+    <li>
+      <strong>Title:</strong>
+      <%= @session.title %>
+    </li>
+
+    <li>
+      <strong>Description:</strong>
+      <%= @session.description %>
+    </li>
+
+    <li>
+      <strong>Image path:</strong>
+      <%= @session.image_path %>
+    </li>
+
+    <li>
+      <strong>Video path:</strong>
+      <%= @session.video_path %>
+    </li>
+
+    <li>
+      <strong>Is published:</strong>
+      <%= @session.is_published %>
+    </li>
+
+    <li>
+      <strong>Is closed:</strong>
+      <%= @session.is_closed %>
+    </li>
+
+    <li>
+      <strong>Total vote count:</strong>
+      <%= @session.total_vote_count %>
+    </li>
+
+  </ul>
+
+  <%= live_patch to: Routes.session_show_path(@socket, :edit, @session) do%>
+      <div class="add">
+        <span class="material-icons">edit</span>
+        ویرایش
+      </div>
+    <% end %>
+    <%= live_redirect to: Routes.session_index_path(@socket, :index) do%>
+      <div class="back">
+        <span class="material-icons">arrow_back</span>
+        بازگشت
+      </div>
+    <% end %>
+</div>

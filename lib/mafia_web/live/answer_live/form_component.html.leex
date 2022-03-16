@@ -1,0 +1,41 @@
+<h2><%= @title %></h2>
+
+<%= f = form_for @changeset, "#",
+  id: "answer-form",
+  phx_target: @myself,
+  phx_change: "validate",
+  phx_submit: "save" %>
+
+
+<div>
+	<%= #label f, :answer %>
+	<label for="answer_<%= :answer %>">عنوان گزینه</label>
+	<%= text_input f, :answer %>
+	<%= error_tag f, :answer %>
+</div>
+
+<div>
+	<%= #label f, :count %>
+	<label for="answer_<%= :order %>">تربیت نمایش</label>
+	<%= number_input f, :order %>
+	<%= error_tag f, :order %>
+</div>
+
+<div>
+	<label for="answer_<%= :is_correct %>">گزینه صحیح</label>
+	<%= checkbox f, :is_correct %>
+	<%= error_tag f, :is_correct %>
+</div>
+
+
+<div>
+	<label for="answer_<%= :image_path %>">عکس گزینه</label>
+	<%= live_file_input @uploads.uploaded_image %>
+  <%= error_tag f, :image_path %>
+</div>
+
+
+<br>
+
+<%= submit "ذخیره", phx_disable_with: "در حال ذخیره سازی ..." %>
+</form>

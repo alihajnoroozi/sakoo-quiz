@@ -1,0 +1,67 @@
+<div class="admin">
+  <h1>لیست مسابقات</h1>
+
+  <%= if @live_action in [:new, :edit] do %>
+    <%= live_modal @socket, MafiaWeb.SessionLive.FormComponent,
+      id: @session.id || :new,
+      title: @page_title,
+      action: @live_action,
+      session: @session,
+      return_to: Routes.session_index_path(@socket, :index) %>
+  <% end %>
+
+  <table>
+    <thead>
+      <tr>
+        <th>عنوان</th>
+        <th>توضیحات</th>
+        <th>انتشار یافته</th>
+        <th>بسته شده</th>
+        <th>تعداد کل شرکت کننده ها</th>
+
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="session">
+      <%= for session <- @session_collection do %>
+        <tr id="session-<%= session.id %>">
+          <td><%= session.title %></td>
+          <td><%= session.description %></td>
+          <td><%= if session.is_published do %>بله <% else %> خیر <% end %></td>
+          <td><%= if session.is_closed do %>بله <% else %> خیر <% end %></td>
+          <td><%= session.total_vote_count %></td>
+
+          <td>
+            <%= live_redirect to: Routes.question_index_path(@socket, :index, session.id) do %>
+              <span class="list material-icons" title="نمایش سوالات">list</span>
+            <% end %>
+            <%= live_redirect to: Routes.session_show_path(@socket, :show, session) do %>
+              <span class="list material-icons" title="نمایش جزییات">preview</span>
+            <% end %>
+            <%= live_patch to: Routes.session_index_path(@socket, :edit, session) do %>
+              <span class="edit material-icons" title="ویرایش">edit</span>
+            <% end %>
+            <%= link to: "#", phx_click: "delete", phx_value_id: session.id, data: [confirm: "از حذف گزینه اطمینان دارید؟"]  do %>
+              <span class="delete material-icons" title="حذف">delete</span>
+            <% end %>
+            <%= if @is_playing and @current_game_id == session.id do %>
+            <button phx-click="game_page"  phx-value-sessionid=<%= session.id %>>صفحه اجرای مسابقه</button>
+            <% end %>
+            <%= if @is_playing == false do %>
+              <%= if session.is_closed == false do %>
+              <button phx-click="start_game" phx-value-sessionid=<%= session.id %>>شروع بازی</button>
+              <% end %>
+              <button><a href="/super-admin/session/contest/<%= session.id %>">مشاهده نتایج</a></button>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= live_patch to: Routes.session_index_path(@socket, :new) do%>
+    <div class="add">
+      <span class="material-icons">add</span>
+      ایجاد مسابقه جدید
+    </div>
+	<% end %>
+</div>

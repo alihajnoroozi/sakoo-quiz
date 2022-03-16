@@ -1,0 +1,58 @@
+<div class="admin">
+  <h1>لیست گزینه ها</h1>
+
+  <%= if @live_action in [:new, :edit] do %>
+    <%= live_modal @socket, MafiaWeb.AnswerLive.FormComponent,
+      id: @answer.id || :new,
+      title: @page_title,
+      action: @live_action,
+      answer: @answer,
+      session_id: @session_id,
+      question_id: @question_id,
+      return_to: Routes.answer_index_path(@socket, :index, @session_id, @question_id) %>
+  <% end %>
+
+  <table style="direction: rtl">
+    <thead>
+      <tr>
+        <th>ترتیب نمایش</th>
+        <th>عنوان گزینه</th>
+        <th>گزینه صحیح؟</th>
+        <th>تعداد رای به این گزینه</th>
+
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="answer">
+      <%= for answer <- @answer_collection do %>
+        <tr id="answer-<%= answer.id %>">
+          <td><%= answer.order %></td>
+          <td><%= answer.answer %></td>
+          <td><%= if answer.is_correct do %>بله <% else %> خیر <% end %></td>
+          <td><%= answer.count %></td>
+
+          <td>
+            <%= live_patch to: Routes.answer_index_path(@socket, :edit, answer) do %>
+              <span class="edit material-icons" title="ویرایش">edit</span>
+            <% end %>
+            <%= link to: "#", phx_click: "delete", phx_value_id: answer.id, data: [confirm: "از حذف گزینه اطمینان دارید؟"]  do %>
+              <span class="delete material-icons" title="حذف">delete</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<%= live_patch to: Routes.answer_index_path(@socket, :new) do%>
+    <div class="add">
+      <span class="material-icons">add</span>
+      افزودن گزینه جدید
+    </div>
+	<% end %>
+  <%= live_patch to: Routes.question_index_path(@socket, :index, @session_id) do%>
+    <div class="back">
+      <span class="material-icons">arrow_back</span>
+      بازگشت به سوال
+    </div>
+	<% end %>
+</div>

@@ -1,0 +1,37 @@
+<h1>Listing User total point</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, MafiaWeb.UserTotalPointLive.FormComponent,
+    id: @user_total_point.id || :new,
+    title: @page_title,
+    action: @live_action,
+    user_total_point: @user_total_point,
+    return_to: Routes.user_total_point_index_path(@socket, :index) %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Total point</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="user_total_point">
+    <%= for user_total_point <- @user_total_point_collection do %>
+      <tr id="user_total_point-<%= user_total_point.id %>">
+        <td><%= user_total_point.user_id %></td>
+        <td><%= user_total_point.total_point %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.user_total_point_show_path(@socket, :show, user_total_point) %></span>
+          <span><%= live_patch "Edit", to: Routes.user_total_point_index_path(@socket, :edit, user_total_point) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: user_total_point.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New User total point", to: Routes.user_total_point_index_path(@socket, :new) %></span>

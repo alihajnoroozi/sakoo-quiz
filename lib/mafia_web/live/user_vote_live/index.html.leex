@@ -1,0 +1,37 @@
+<h1>Listing User vote</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, MafiaWeb.UserVoteLive.FormComponent,
+    id: @user_vote.id || :new,
+    title: @page_title,
+    action: @live_action,
+    user_vote: @user_vote,
+    return_to: Routes.user_vote_index_path(@socket, :index) %>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Vote</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="user_vote">
+    <%= for user_vote <- @user_vote_collection do %>
+      <tr id="user_vote-<%= user_vote.id %>">
+        <td><%= user_vote.user_id %></td>
+        <td><%= user_vote.vote_id %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.user_vote_show_path(@socket, :show, user_vote) %></span>
+          <span><%= live_patch "Edit", to: Routes.user_vote_index_path(@socket, :edit, user_vote) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: user_vote.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New User vote", to: Routes.user_vote_index_path(@socket, :new) %></span>

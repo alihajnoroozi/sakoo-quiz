@@ -1,0 +1,63 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+<div class="admin">
+  <h1>لیست سوالات</h1>
+
+  <%= if @live_action in [:new, :edit] do %>
+    <%= live_modal @socket, MafiaWeb.QuestionLive.FormComponent,
+      id: @question.id || :new,
+      title: "افزودن سوال جدید",
+      action: @live_action,
+      question: @question,
+      session_id: @session_id,
+      return_to: Routes.question_index_path(@socket, :index, @session_id) %>
+  <% end %>
+  <table style="direction: rtl">
+    <thead>
+      <tr>
+        <th>سوال</th>
+        <th>توضیحات ادمین</th>
+        <th>ترتیب نمایش</th>
+        <th>مهلت پاسخ ( به ثانیه)</th>
+        <th>امتیاز سوال</th>
+
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="question">
+      <%= for question <- @question_collection do %>
+        <tr id="question-<%= question.id %>">
+          <td><%= question.question %></td>
+          <td><%= question.admin_description %></td>
+          <td><%= question.order %></td>
+          <td><%= question.answer_time %></td>
+          <td><%= question.point %></td>
+
+          <td>
+            <%= live_patch to: Routes.answer_index_path(@socket, :index, @session_id, question.id) do %>
+              <span class="list material-icons" title="گزینه ها">list</span>
+            <% end %>
+            <%= live_patch to: Routes.question_index_path(@socket, :edit, question) do %>
+              <span class="edit material-icons" title="ویرایش">edit</span>
+            <% end %>
+            <%= link to: "#", phx_click: "delete", phx_value_id: question.id, phx_value_id: question.id, data: [confirm: "از حذف گزینه اطمینان دارید؟"]  do %>
+              <span class="delete material-icons" title="حذف">delete</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= live_patch to: Routes.question_index_path(@socket, :new) do%>
+    <div class="add">
+      <span class="material-icons">add</span>
+      ایجاد سوال جدید
+    </div>
+	<% end %>
+  <%= live_patch to: Routes.session_index_path(@socket, :index) do%>
+    <div class="back">
+      <span class="material-icons">arrow_back</span>
+      بازگشت
+    </div>
+	<% end %>
+</div>

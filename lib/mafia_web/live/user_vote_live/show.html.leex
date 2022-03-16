@@ -1,0 +1,27 @@
+<h1>Show User vote</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, MafiaWeb.UserVoteLive.FormComponent,
+    id: @user_vote.id,
+    title: @page_title,
+    action: @live_action,
+    user_vote: @user_vote,
+    return_to: Routes.user_vote_show_path(@socket, :show, @user_vote) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>User:</strong>
+    <%= @user_vote.user_id %>
+  </li>
+
+  <li>
+    <strong>Vote:</strong>
+    <%= @user_vote.vote_id %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.user_vote_show_path(@socket, :edit, @user_vote), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.user_vote_index_path(@socket, :index) %></span>

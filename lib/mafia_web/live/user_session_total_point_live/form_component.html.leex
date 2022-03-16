@@ -1,0 +1,22 @@
+<h2><%= @title %></h2>
+
+<%= f = form_for @changeset, "#",
+  id: "user_session_total_point-form",
+  phx_target: @myself,
+  phx_change: "validate",
+  phx_submit: "save" %>
+
+  <%= label f, :user_id %>
+  <%= text_input f, :user_id %>
+  <%= error_tag f, :user_id %>
+
+  <%= label f, :session_id %>
+  <%= text_input f, :session_id %>
+  <%= error_tag f, :session_id %>
+
+  <%= label f, :total_point %>
+  <%= number_input f, :total_point %>
+  <%= error_tag f, :total_point %>
+
+  <%= submit "Save", phx_disable_with: "Saving..." %>
+</form>

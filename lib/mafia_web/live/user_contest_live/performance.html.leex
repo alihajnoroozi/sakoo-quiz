@@ -1,0 +1,172 @@
+<section id="performance">
+	<header id="top-header" <%= if @expanded==true do %>class="expanded"<%end%>>
+		<section id="user-info-box">
+			<a href="/"><img id="mafia-logo-initial" src="/images/logo.png" alt="mafia logo" height="48px"/></a>
+			<div id="mobile">
+				<%= @current_user.mobile %>
+				<span class="material-icons">
+					expand_more
+				</span>
+			</div>
+		</section>
+        <div class="header-bg" phx-click="toggle"></div>
+		<a href="https://www.telewebion.com/" class="back-to-telewebion">
+			<img src="/images/telewebion-logo.svg" class="dark"/>
+			<span>بازگشت به تلـوبیـون</span>
+			<span class="material-icons">
+			arrow_back_ios
+			</span>
+		</a>
+		<img id="tw-logo" class="dark" src="/images/telewebion-logo.svg" alt="mafia logo" height="48px" phx-click="toggle"/>
+		<%# <button type="button" class="close" phx-click="toggle">
+        	<img src="/images/close.svg"/>
+        </button> %>
+	</header>
+
+	<%= if  @is_playing == true and @is_question_showing == true and @has_voted == false do%>
+
+		<audio autoplay="true">
+			<source src="/audio/mafia-questions.ogg" type="audio/ogg">
+		</audio>
+		<section id="game-play">
+			<header>
+				<div id="time">
+					<span>زمان باقی‌مانده ...</span>
+					<span id="time-left">
+						<%= if @countdown > 0 do %>
+							<%= if rem(@countdown,60 ) > 9 do %> <%= rem(@countdown,60 ) %> <% else %> 0<%= rem(@countdown,60 ) %> <% end %>:
+							<%= if trunc(@countdown/60) > 9 do %><%= trunc(@countdown/60) %><% else %>0<%= trunc(@countdown/60) %><% end %>
+						<% else %>
+							00:00
+						<% end %>
+					</span>
+				</div>
+				<div id="info">
+					<section id="general">
+						<div id="question-info">سوال  <%= @question.order %> از <%= @total_questions_count %> (<%= @question.point %> امتیاز)</div>
+						<div id="total-points">امتیاز کل: <%= @user_total_point %></div>
+					</section>
+					<section id="question">
+						<%= if @is_question_showing == true and @has_voted==false do%>
+							<%= @question.question %>
+						<%= end %>
+					</section>
+				</div>
+			</header>
+			<section id="question-options">
+				<%= f = form_for :vote, "#", phx_submit: :vote, phx_change: "vote_changeset"%>
+				<%= csrf_meta_tag() %>
+					<ul>
+						<%= for option <- @options do %>
+						<li>
+							<input type="radio" name="answer_id" id="option-<%= option.id %>" value="<%= option.id %>" <%= if @user_selected_option == to_string(option.id) do %> checked="checked" <% end %>>
+							<label for="option-<%= option.id %>" <%= if option.image_path != '' and option.image_path != nil do 'class=has-image' end%>>
+								<span class="option-text"><%= option.answer %></span>
+								<%= if option.image_path != '' and option.image_path != nil do %>
+									<img src="<%= Routes.static_path(@socket, option.image_path) %>" height="54px"/>
+								<% end %>
+							</label>
+						</li>
+						<% end %>
+					</ul>
+					<div id="vote-btn-cont" <%= if @is_form_valid == true do %> class="show-mob" <% end %>>
+						<button type="submit" id="submit-vote" <%= if @is_form_valid == false do %> disabled="disabled" <% end %>>
+							ثبت پاسخ
+						</button>
+					</div>
+				</form>
+			</section>
+		</section>
+	<% end %>
+	<%= if  @is_playing == true and @is_question_showing == false  do %>
+		<section id="wait-for-question">
+			<img src="/images/tv.svg" alt="tv" height="119px"/>
+			<p>منتظر اعلام سوال از تلوزیون باشید...</p>
+			<!-- <section id="general">
+				<div id="question-info">سوال <%= #@question.order %> از <%= #@total_questions_count %> (<%= #@question.point %> امتیاز)</div>
+				<div id="total-points">امتیاز کل: <%= #@user_total_point %></div>
+			</section> -->
+		</section>
+	<% end %>
+
+	<%= if  @is_playing == true and @is_question_showing == true and  @has_voted == true do %>
+	<section id="wait-for-question">
+		<img src="/images/tv.svg" alt="tv" height="119px"/>
+		<p>رای شما با موفقیت ثبت شد</p>
+		<p id="time-left">
+			<%= if @countdown > 0 do %>
+			<%= if rem(@countdown,60 ) > 9 do %> <%= rem(@countdown,60 ) %> <% else %> 0<%= rem(@countdown,60 ) %> <% end %>:
+			<%= if trunc(@countdown/60) > 9 do %><%= trunc(@countdown/60) %><% else %>0<%= trunc(@countdown/60) %><% end %>
+						<% else %>
+			00:00
+			<% end %>
+		</p>
+		<p>در انتظار پایان مهلت پاسخگویی</p>
+
+		<!-- <section id="general">
+				<div id="question-info">سوال <%= #@question.order %> از <%= #@total_questions_count %> (<%= #@question.point %> امتیاز)</div>
+				<div id="total-points">امتیاز کل: <%= #@user_total_point %></div>
+			</section> -->
+	</section>
+	<% end %>
+
+
+	<%= if @is_playing == false and @is_question_showing == false and @is_leaderboard_calculating == false and @is_leaderboard_is_ready == false do%>
+		<section id="wait-for-results">مسابقه به پایان رسید
+		منتظر اعلام نتایج باشید...
+			<span>....</span>
+		</section>
+	<% end %>
+	<%= if (@is_leaderboard_calculating == true or @is_leaderboard_is_ready == true) and @is_playing == false  do%>
+		<%= if @is_leaderboard_is_ready == true do %>
+			<a href="/" id="back-home">بازگشت به صفحه اصلی</a>
+		<% end %>
+		<section class="leader-board">
+			<header>
+				<div>
+					<img src="/images/olive-frame-yello.svg" alt="olive-frame-yello" width="40px"/>
+					<span>برترین بازیکنان امروز</span>
+				</div>
+			</header>
+			<div id="score-summery">
+				<div>
+					<span>رتبه امروز شما</span>
+					<span class="summery-value"><%= @user_leaderboard_data.rank %></span>
+				</div>
+				<div>
+					<span>امتیاز امروز شما</span>
+					<span class="summery-value"><%= @user_total_point %></span>
+				</div>
+			</div>
+			<%= if @is_leaderboard_calculating == true do %>
+				<p id="calculating">در حال ایجاد جدول برترین ها</p>
+				<div id="dots">
+					<div class="dot"></div>
+					<div class="dot"></div>
+					<div class="dot"></div>
+					<div class="dot"></div>
+				</div>
+			<% end %>
+			<%= if @is_leaderboard_is_ready == true do %>
+				<section id="board">
+					<div class="board-row">
+						<div class="right">
+							<div class="rank">رتبه</div>
+							<div class="mobile">شماره کاربر</div>
+						</div>
+						<div class="points">امتیاز</div>
+					</div>
+					<%= for item <- @leaderboard_data do %>
+						<div class="board-row <%= if item.user_id == @current_user.id do %>me<% end %>" >
+							<div class="right">
+								<div class="rank"><%=item.rank%></div>
+								<div class="mobile"><%=Mafia.Utility.hide_mobile_middle_numbers(item.user_mobile)%></div>
+							</div>
+							<div class="points"><%=item.total_point%></div>
+						</div>
+					<% end %>
+				</section>
+			<% end %>
+		</section>
+	<% end %>
+</section>

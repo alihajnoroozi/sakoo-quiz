@@ -1,0 +1,42 @@
+<h1>Show Question</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, MafiaWeb.QuestionLive.FormComponent,
+    id: @question.id,
+    title: @page_title,
+    action: @live_action,
+    question: @question,
+    return_to: Routes.question_show_path(@socket, :show, @question) %>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Session:</strong>
+    <%= @question.session_id %>
+  </li>
+
+  <li>
+    <strong>Question:</strong>
+    <%= @question.question %>
+  </li>
+
+  <li>
+    <strong>Is showing:</strong>
+    <%= @question.is_showing %>
+  </li>
+
+  <li>
+    <strong>Answer time:</strong>
+    <%= @question.answer_time %>
+  </li>
+
+  <li>
+    <strong>Point:</strong>
+    <%= @question.point %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.question_show_path(@socket, :edit, @question), class: "button" %></span>
+<span><%= live_redirect "Back", to: Routes.question_index_path(@socket, :index) %></span>
