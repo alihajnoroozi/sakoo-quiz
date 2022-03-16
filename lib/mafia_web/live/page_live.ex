@@ -6,7 +6,7 @@ defmodule MafiaWeb.PageLive do
     if connected?(socket) do
       Mafia.Game.subscribe()
     end
-    is_playing = case (Mafia.Redis.get_by_key("is_playing")) do
+    is_playing = case (Mafia.Redis.get_by_key("#{Application.get_env(:mafia, :product_name)}_is_playing")) do
       {:ok, nil} ->
         false
       {:ok, value} ->
@@ -84,7 +84,7 @@ defmodule MafiaWeb.PageLive do
 
   @impl true
   def handle_info({:leaderboard_is_ready, message}, socket) do
-    user_data = Mafia.Redis.get_by_key!("statistics-#{socket.assigns.question.session_id}-#{socket.assigns.current_user.id}")
+#    user_data = Mafia.Redis.get_by_key!("#{Application.get_env(:mafia, :product_name)}_statistics-#{socket.assigns.question.session_id}-#{socket.assigns.current_user.id}")
     {
       :noreply,
       socket
@@ -109,7 +109,7 @@ defmodule MafiaWeb.PageLive do
 
   @impl true
   def handle_info({:online_user_updated, message}, socket) do
-    {:ok, online_users} = Mafia.Redis.get_by_key("online_users")
+    {:ok, online_users} = Mafia.Redis.get_by_key("#{Application.get_env(:mafia, :product_name)}_online_users")
     {
       :noreply,
       socket

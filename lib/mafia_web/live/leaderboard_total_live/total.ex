@@ -6,11 +6,11 @@ defmodule MafiaWeb.LeaderboardLive.Total do
   @presence "mafia:presence"
   @impl true
   def mount(_params, _session, socket) do
-    user_ranks = case Mafia.Redis.get_by_key("total_leaderboard_ranks") do
+    user_ranks = case Mafia.Redis.get_by_key("#{Application.get_env(:mafia, :product_name)}_total_leaderboard_ranks") do
       {:ok, nil} ->
         ranks = get_users_ranks()
         {:ok, string_ranks} = Jason.encode(ranks)
-        Mafia.Redis.set_by_key("total_leaderboard_ranks", string_ranks)
+        Mafia.Redis.set_by_key("#{Application.get_env(:mafia, :product_name)}_total_leaderboard_ranks", string_ranks)
         ranks
       {:ok, value} ->
         {:ok, result} = Jason.decode(value, [{:keys, :atoms}])
@@ -18,7 +18,7 @@ defmodule MafiaWeb.LeaderboardLive.Total do
       _ ->
         ranks = get_users_ranks()
         {:ok, string_ranks} = Jason.encode(ranks)
-        Mafia.Redis.set_by_key("total_leaderboard_ranks", string_ranks)
+        Mafia.Redis.set_by_key("#{Application.get_env(:mafia, :product_name)}_total_leaderboard_ranks", string_ranks)
         ranks
     end
 
@@ -29,7 +29,7 @@ defmodule MafiaWeb.LeaderboardLive.Total do
         [result.total_point, result.rank]
       end
 
-    sessions_list = case Mafia.Redis.get_by_key("sessions_list") do
+    sessions_list = case Mafia.Redis.get_by_key("#{Application.get_env(:mafia, :product_name)}_sessions_list") do
       {:ok, nil } ->
           get_sessions_list_from_database()
       {:ok, value} ->
@@ -71,30 +71,45 @@ defmodule MafiaWeb.LeaderboardLive.Total do
 
   @impl true
   def handle_event("get_specific_session_data", %{"session_id" => session_id}, socket) do
-#    IO.inspect session_id
-    session_data = get_specific_session_data(session_id)
-    [current_user_session_rank, current_user_total_point] = get_user_session_data!(session_id, socket.assigns.current_user.id)
-#    IO.inspect "=============="
-#    IO.inspect user_data
-    {
-      :noreply,
-      socket
-      |> assign(:sessions_leaderboard_data, session_data)
-      |> assign(:current_user_session_total_point, current_user_total_point)
-      |> assign(:current_user_session_rank, current_user_session_rank)
-    }
+    case session_id do
+      "nothing" ->
+        {
+          :noreply,
+          socket
+        }
+      _ ->
+        session_data = case is_integer(session_id) do
+          false ->
+            get_specific_session_data(Mafia.Utility.parsInt(session_id))
+          true ->
+            get_specific_session_data(session_id)
+        end
+        [current_user_session_rank, current_user_total_point] = get_user_session_data!(session_id, socket.assigns.current_user.id)
+        {
+          :noreply,
+          socket
+          |> assign(:sessions_leaderboard_data, session_data)
+          |> assign(:current_user_session_total_point, current_user_total_point)
+          |> assign(:current_user_session_rank, current_user_session_rank)
+        }
+    end
   end
 
 
   defp get_sessions_list_from_database() do
     sessions = Mafia.Game.list_session_published()
     { :ok, encoded_sessions } = Jason.encode(Mafia.Game.Session.session_cast(sessions))
-    Mafia.Redis.set_by_key("sessions_list", encoded_sessions)
+    Mafia.Redis.set_by_key("#{Application.get_env(:mafia, :product_name)}_sessions_list", encoded_sessions)
     sessions
   end
 
   defp get_specific_session_data(session_id) do
-    Mafia.Accounts.list_user_session_total_point_by_session_id_sorted_by_rank(Mafia.Utility.parsInt(session_id))
+    case is_integer(session_id) do
+      false ->
+        Mafia.Accounts.list_user_session_total_point_by_session_id_sorted_by_rank(Mafia.Utility.parsInt(session_id))
+      true ->
+        Mafia.Accounts.list_user_session_total_point_by_session_id_sorted_by_rank(session_id)
+    end
   end
 
   defp get_user_session_data!(session_id, user_id) do
