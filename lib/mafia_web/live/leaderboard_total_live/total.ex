@@ -50,7 +50,7 @@ defmodule MafiaWeb.LeaderboardLive.Total do
       |> assign(:current_user_session_total_point, 0)
       |> assign(:current_user_session_rank, 0)
       |> assign(:expanded, false)
-      |> assign(:page_title, "لیدربرد مسابقه مافیا")
+      |> assign(:page_title, "لیدربرد مسابقه")
     }
   end
 

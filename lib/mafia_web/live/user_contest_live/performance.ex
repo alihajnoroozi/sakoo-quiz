@@ -179,7 +179,7 @@ defmodule MafiaWeb.UserContestLive.Performance do
         |> assign(:leaderboard_data, leaderboard_data)
         |> assign(:total_questions_count, total_questions_count)
         |> assign(:expanded, false)
-        |> assign(:page_title, "مسابقه در حال اجرا | مافیا")
+        |> assign(:page_title, "مسابقه در حال اجرا")
 #        |> handle_joins(Presence.list(@presence))
       }
     else
