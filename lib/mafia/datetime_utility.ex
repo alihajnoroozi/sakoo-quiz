@@ -22,4 +22,17 @@ defmodule Mafia.DatetimeUtility do
     add_time_to_current_datetime!(number)
     |> generate_timestamp_from_date!
   end
+
+  def generate_cookie_expiration_time!(number, type) do
+    case type do
+      :second ->
+        number
+      :minute ->
+        number * 60
+      :hour ->
+        number * 3600
+      :day ->
+        number * 86400
+    end
+  end
 end

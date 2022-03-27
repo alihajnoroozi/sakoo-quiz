@@ -21,7 +21,7 @@ defmodule MafiaWeb.SessionController do
     |> put_session("user", %{ id: user_id, mobile: mobile, is_admin: is_admin})
     |> put_resp_cookie("token", access_token,
          http_only: true,
-         max_age: 86400,
+         max_age: Mafia.DatetimeUtility.generate_cookie_expiration_time!(30, :day)
        )
     |> redirect(to: "/")
   end
