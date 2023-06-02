@@ -11,7 +11,7 @@ use Mix.Config
 # before starting your production server.
 config :mafia, MafiaWeb.Endpoint,
   force_ssl: [rewrite_on: [:x_forwarded_proto], hsts: true, host: nil],
-  url: [scheme: "https", host: "mafia.telewebion.com", port: 443],
+  url: [scheme: "https", host: "mafiaa.telewebion.com", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json",
   http: [
     port: 80,
