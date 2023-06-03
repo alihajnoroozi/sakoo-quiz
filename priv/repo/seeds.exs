@@ -1,11 +1,16 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     Mafia.Repo.insert!(%Mafia.SomeSchema{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+alias Mafia.Repo
+# alias Survey.Settings.Setting
+
+# Seeding User table
+admin = System.get_env("ADMIN_NUMBER")
+dup_admin = Mafia.Accounts.get_user_by_mobile!(admin)
+if dup_admin do
+  Mafia.Accounts.update_user(dup_admin, %{ is_admin: true })
+  IO.inspect("User Already Exists :( But I Gave Him Admin Permission :)")
+else
+  Mafia.Accounts.create_user(%{
+    mobile: admin,
+    is_admin: true
+  })
+  IO.inspect("User Added In Admin Role :)")
+end

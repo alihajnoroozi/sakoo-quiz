@@ -9,7 +9,7 @@ use Mix.Config
 
 config :mafia,
   ecto_repos: [Mafia.Repo],
-  product_name: "poorang"
+  product_name: System.get_env("product_name")
 
 # Configures the endpoint
 config :mafia, MafiaWeb.Endpoint,

@@ -10,26 +10,27 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :mafia, MafiaWeb.Endpoint,
-  force_ssl: [rewrite_on: [:x_forwarded_proto], hsts: true, host: nil],
-  url: [scheme: "https", host: "mafiaa.telewebion.com", port: 443],
+  # force_ssl: [rewrite_on: [:x_forwarded_proto], hsts: true, host: nil],
+  url: [scheme: "http", port: 4000],
   cache_static_manifest: "priv/static/cache_manifest.json",
   http: [
-    port: 80,
+    port: 4000,
     ip: {0,0,0,0},
     transport_options: [max_connections: 131_072, num_acceptors: 1024]
-  ],
-  https: [
-    ip: {0,0,0,0},
-    port: 443,
-    certfile: "/etc/certum/telewebion.com/fullchain.crt",
-    keyfile: "/etc/certum/telewebion.com/private.key",
-    cipher_suite: :compatible,
-    transport_options: [max_connections: 131_072, num_acceptors: 2048],
-    reuse_sessions: true,
-    honor_cipher_order: true,
-    versions: [:"tlsv1.2", :"tlsv1.1", :tlsv1]
-    #transport_options: [socket_opts: [:inet]]
   ]
+  # ,
+  # https: [
+  #   ip: {0,0,0,0},
+  #   port: 443,
+  #   certfile: "/etc/certum/telewebion.com/fullchain.crt",
+  #   keyfile: "/etc/certum/telewebion.com/private.key",
+  #   cipher_suite: :compatible,
+  #   transport_options: [max_connections: 131_072, num_acceptors: 2048],
+  #   reuse_sessions: true,
+  #   honor_cipher_order: true,
+  #   versions: [:"tlsv1.2", :"tlsv1.1", :tlsv1]
+  #   #transport_options: [socket_opts: [:inet]]
+  # ]
 
 # Do not print debug messages in production
 config :logger, level: :info
