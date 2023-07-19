@@ -42,7 +42,8 @@ defmodule Mafia.Application do
 
         #      {Redix, "redis://localhost:6379"}
 #        {Redix, {"redis://localhost:6379", [name: RedisConnection]}},
-        { Redix, {"redis://:#{System.fetch_env!("REDIS_PASSWORD")}@#{System.fetch_env!("REDIS_HOST")}:#{redis_port}", [name: RedisConnection]} },
+        { Redix, {"redis://:#{System.fetch_env!("REDIS_PASSWORD")}@#{System.fetch_env!("REDIS_HOST")}:#{redis_port}", [name: RedisConnection]},},
+        
         Mafia.Presence,
         # Start a worker by calling: Mafia.Worker.start_link(arg)
         # {Mafia.Worker, arg}
