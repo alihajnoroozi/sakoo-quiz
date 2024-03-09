@@ -13,8 +13,9 @@ config :mafia, MafiaWeb.Endpoint,
   # force_ssl: [rewrite_on: [:x_forwarded_proto], hsts: true, host: nil],
   url: [scheme: "http", port: 4000],
   cache_static_manifest: "priv/static/cache_manifest.json",
+  check_origin: false,
   http: [
-    port: 4000,
+    port: String.to_integer(System.get_env("PORT") || "4000"),
     ip: {0,0,0,0},
     transport_options: [max_connections: 131_072, num_acceptors: 1024]
   ]

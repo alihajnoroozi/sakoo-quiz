@@ -6,8 +6,9 @@ defmodule Sms do
     if Mix.env() in [:dev, :test] do
     :ok
     else
-    # final_url = Enum.join([System.fetch_env!("SMS_SERVER") <> "?", "mobile=" <> to, "message=" <> message], "&")
-    final_url = Enum.join(["localhost:80" <> "?", "mobile=" <> to, "message=" <> message], "&")
+    final_url = Enum.join([System.fetch_env!("SMS_SERVER") <> "?", "mobile=" <> to, "code=" <> message], "&")
+
+    # final_url = Enum.join(["localhost:80" <> "?", "mobile=" <> to, "message=" <> message], "&")
     IO.inspect(URI.encode(final_url))
     # headers = ["token": System.fetch_env!("NOME_AUTHORIZATION_TOKEN"), "Accept": "Application/json; Charset=utf-8"]
     headers = ["Accept": "Application/json; Charset=utf-8"]

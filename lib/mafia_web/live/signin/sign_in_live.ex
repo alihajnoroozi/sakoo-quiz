@@ -114,7 +114,7 @@ defmodule MafiaWeb.SignInLive do
     if changeset_verify.valid? do
       code = PasswordlessAuth.generate_code(mobile, 4)
       Logger.info(code)
-      case Sms.send_text_message(mobile, code <> "\n کد ورود به مسابقه کلبه عمو پورنگ ") do
+      case Sms.send_text_message(mobile, code) do
         :ok ->
           Logger.info("SMS Sent")
           {:noreply, socket}
